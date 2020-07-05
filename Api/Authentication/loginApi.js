@@ -14,7 +14,7 @@ router.post("/login", tryCatchMiddleware(async(req,res)=>{
     //authenticate user EmailId
     let userEmailId = await uModel.userModel
         .findOne({"userLogin.emailId":req.body.emailId});
-    if(!userEmailId){return res.status(404).send({message:"Invalid EmailId !!"})};
+    if(!userEmailId){return res.status(403).send({message:"Invalid EmailId !!"})};
 
     //authenticate password
     let userPassword = await bcryptjs

@@ -3,7 +3,7 @@ const Joi  = require("@hapi/joi");
 
 let feedbackSchema = new mongoose.Schema({
     name:{type:String,min:4,max:50,required:true},
-    emailId:{type:String,min:10,required:true},
+    emailId:{type:String,min:10,required:true, trim: true, lowercase:true},
     message:{type:String,min:5,max:20000}
 });
 

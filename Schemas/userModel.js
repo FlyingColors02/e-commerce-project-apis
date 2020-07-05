@@ -2,14 +2,15 @@ const mongoose = require("mongoose");
 const Joi = require("@hapi/joi");
 let jwt = require("jsonwebtoken");
 let config = require("config");
+const JoiPhoneNumber = Joi.extend(require("joi-phone-number"));
+let mongooseTypePhone = require("mongoose-type-phone");
 
 let userSchema = new mongoose.Schema({
-    firstname:{type:String,min:3,max:30,required:true},
-    lastname:{type:String,min:3,max:30,required:true},
+    userName:{type:String,min:3,max:30,required:true},
     newsLetterCheck:{type:Boolean},
-    mobileNo:{type:Number},
+    mobileNo:{type: mongooseTypePhone.Phone },
     userLogin:{
-        emailId:{type:String,min:10,max:30,required:true},
+        emailId:{type:String,min:10,max:30,required:true, trim: true, lowercase: true},
         password:{type:String,min:8,max:50,required:true}
     },
     resetPasswordToken : {type:String},
@@ -28,14 +29,13 @@ let userModel = mongoose.model("userdetails",userSchema);
 
  function Validation(data){
     let Schema = Joi.object({
-        firstname:Joi.string().min(4).max(30).required(),
-        lastname:Joi.string().min(3).max(30).required(),
+        userName:Joi.string().min(4).max(30).required(),
         newsLetterCheck:Joi.boolean(),
-        mobileNo: Joi.number().optional(),
+        mobileNo: JoiPhoneNumber.string().phoneNumber(),
         userLogin:{
-            emailId:Joi.string().email().min(10).max(30).required(),
+            emailId:Joi.string().email().min(10).max(50).required(),
             password: Joi.string().min(8).max(50).required(),
-            confirmPassword: Joi.string().valid(Joi.ref('password')).required().strict() 
+            confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({'any.only': 'ConfirmPassword must match Password'})
     },
         isAdmin : Joi.boolean(),
         recordDate: Joi.date(),
@@ -46,7 +46,7 @@ let userModel = mongoose.model("userdetails",userSchema);
 
 function ValidationLogin(data){
     let Schema = Joi.object().keys({
-        emailId:Joi.string().email().min(10).max(30).required(),
+        emailId:Joi.string().email().min(10).max(50).required(),
         password: Joi.string().min(8).max(50).required().strict() 
           
     });

@@ -2,6 +2,8 @@ let express = require("express");
 let mongoose = require("mongoose");
 let app = express();
 app.use(express.json());
+let cors = require("cors");
+app.use(cors());
 let port = process.env.PORT || 4500;
 // let fawn = require("f")
 

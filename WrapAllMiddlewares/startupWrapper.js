@@ -19,9 +19,9 @@ module.exports = function(app){
     app.use("/api/password",sendMail);
     app.use("/api/password",resetPassword);
     app.use("/api/user",feedback);
-    app.use("/api/product",category);
-    app.use("/api/product",subCategory);
-    app.use("/api/product",products);
+    app.use("/api/products",category);
+    app.use("/api/products",subCategory);
+    app.use("/api/products",products);
     app.use("/api/cart",cart);
     app.use(error);
 

@@ -69,11 +69,12 @@ router.post( "/addproduct" , [ AuthUserJwt, AuthIsAdmin], uploads.single("image"
         price: req.body.price,
         brandName:req.body.brandName,
         offerPrice: req.body.offerPrice,
+        percentOff:Math.round(100*req.body.offerPrice/req.body.price),
         stock: req.body.stock,
         isAvailable: req.body.isAvailable,
         isTodayOfferAvailable: req.body.isTodayOfferAvailable,
-        Productcategory:{"_id":Category._id,"categoryName":Category.categoryName},
-        ProductsubCategory:Category.subCat,
+        Productcategory:Category.categoryName,
+        ProductsubCategory:Category.subCat[0].subCategoryName,
         isAdmin: req.body.isAdmin,
     });
     let data = await newProduct.save();
@@ -121,7 +122,7 @@ router.delete("/removeproduct/:id", [ AuthUserJwt, AuthIsAdmin], tryCatchMiddlew
     res.send({message: "Data Got Deleted"});
 }));
 
-router.get("/allproduct", tryCatchMiddleware( async ( req, res)=>{
+router.get("/allproducts", tryCatchMiddleware( async ( req, res)=>{
 
     let allProduct = await productsModel.productModel.find();
 
@@ -130,7 +131,7 @@ router.get("/allproduct", tryCatchMiddleware( async ( req, res)=>{
     res.send({message: "Found Data !!", data: allProduct});
 }));
 
-router.get("/findproduct/:id", tryCatchMiddleware( async( req, res) => {
+router.get("/productbyid/:id", tryCatchMiddleware( async( req, res) => {
 
     let findProductById = await productsModel.productModel.findById(req.params.id);
 

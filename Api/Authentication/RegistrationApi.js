@@ -19,8 +19,7 @@ router.post("/register", tryCatchMiddleware(async( req, res) => {
  
     //for new registration
     let newRegistration = new uModel.userModel({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
+        userName: req.body.userName,
         newsLetterCheck: req.body.newsLetterCheck,
         mobileNo: req.body.mobileNo,
         userLogin: req.body.userLogin,
