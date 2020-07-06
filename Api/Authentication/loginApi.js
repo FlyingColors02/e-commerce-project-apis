@@ -19,7 +19,7 @@ router.post("/login", tryCatchMiddleware(async(req,res)=>{
     //authenticate password
     let userPassword = await bcryptjs
         .compare(req.body.password,userEmailId.userLogin.password)
-    if(!userPassword){return res.status(403).send({message:"Inavlid Password !!"})};
+    if(!userPassword){return res.status(403).send({message:"Invalid Password !!"})};
 
     let jwt = userEmailId.jwtToken();
     res.header("x-auth-token",jwt).send({message:"Login Done !!",jwt});
