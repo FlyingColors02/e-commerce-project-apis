@@ -23,8 +23,6 @@ let checkOutUserCartModel = mongoose.model("usercartitem", chechOutUserCartSchem
 function chechOutValidation(data){
     let Schema = Joi.object().keys({
         emailId: Joi.string().email().required(),
-        _id: Joi.string(),
-        __v: Joi.allow(),
        cartItem: Joi.object().keys({
         _id: Joi.string().min(3).max(100).required(),
         brandName:Joi.string().min(3).max(300).required(),
