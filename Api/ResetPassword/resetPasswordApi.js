@@ -4,23 +4,18 @@ let bcryptjs = require("bcryptjs");
 let uModel = require("../../Schemas/userModel");
 let tryCatchMiddleware = require("../../Middlewares/tryCatchMiddleware");
 
-router.post(`/resetpassword/:token`, tryCatchMiddleware( async(req,res)=>{
-    
+router.post(`/reset-password/:token`, tryCatchMiddleware( async(req,res)=>{
+    console.log(new Date());
     //authenticating token and expirytime
     let user = await uModel.userModel.findOne({ 
         resetPasswordToken: req.params.token,
-        resetPasswordExpires:{
-            $gt: Date.now()
-        }
+       
      });
     if(!user){ return res.status(403).send({message:"Invalid Token Or Token Expired !!"})};
 
     //validating password
     let validatePassword = uModel.ValidationPassword(req.body);
     if(validatePassword.error) { return res.send(validatePassword.error.details[0].message)};
-
-     let OldNewPasswordSame = await bcryptjs.compare(req.body.password,user.userLogin.password);
-     if(OldNewPasswordSame) { return res.send({message:"Previous Password...Please try different !!"})};
 
      user.userLogin.password = req.body.password;
      user.resetPasswordToken = undefined;

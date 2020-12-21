@@ -4,13 +4,14 @@ let cartModel = require("../Schemas/cartModel");
 let AuthUserJwt = require("../Middlewares/authUserJWT");
 let tryCatchMiddleware = require("../Middlewares/tryCatchMiddleware");
 
-router.get("/allcartproduct", tryCatchMiddleware( async ( req, res) => {
-    let cartProduct = await cartModel.checkOutUserCartModel.find({"emailId":"shraduborse97@gmail.com"});
-    if(!cartProduct[0]) { return res.status(404).send({message:"Not Found !!"})};
+router.get("/allcartproduct",AuthUserJwt, tryCatchMiddleware( async ( req, res) => {
+    console.log(req.userEmailId.emailId);
+    let cartProduct = await cartModel.checkOutUserCartModel.find({"emailId": req.userEmailId.emailId});
+    if(cartProduct[0]== null) { return res.status(404).send({message:"Not Found !!"})};
      res.send(cartProduct);
 }));
 
-router.get("/checkout", tryCatchMiddleware( async ( req, res) => {
+router.get("/checkout", AuthUserJwt, tryCatchMiddleware( async ( req, res) => {
     let checkout = await cartModel.checkOutUserCartModel.find({'emailId':req.body.emailId});
        //just set email:1 to get only email in projection
        if(!checkout) { return res.status(403).send("Data Not Found")};
@@ -46,7 +47,7 @@ console.log(req.body.emailId);
 }));
 
 router.put("/update-to-cart/:id", tryCatchMiddleware( async ( req, res) =>{
-    
+    console.log(req.body);
     let validate = cartModel.chechOutValidation(req.body);
     if(validate.error) { return res.send(validate.error.details[0].message)};
 
@@ -56,7 +57,7 @@ router.put("/update-to-cart/:id", tryCatchMiddleware( async ( req, res) =>{
     res.send({message:"Updated Successfully !!", data: updateCart});
 }));
 
-router.delete("/remove-from-cart/:productid", tryCatchMiddleware( async ( req, res) => {
+router.delete("/remove-from-cart/:productid",AuthUserJwt, tryCatchMiddleware( async ( req, res) => {
     let removeFromCart = await cartModel.checkOutUserCartModel.findByIdAndRemove(req.params.productid);
     if(!removeFromCart) { return res.status(403).send("Invalid Product Id !!")};
     res.send({message:"Removed From Cart !!"});

@@ -22,7 +22,8 @@ router.post("/login", tryCatchMiddleware(async(req,res)=>{
     if(!userPassword){return res.status(403).send({message:"Invalid Password !!"})};
 
     let jwt = userEmailId.jwtToken();
-    res.header("x-auth-token",jwt).send({message:"Login Done !!",jwt});
+    res.header("x-authuser-token",jwt).send({message:"Login Done !!",jwt});
 }));
+
 
 module.exports = router;

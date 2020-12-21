@@ -6,9 +6,9 @@ let uModel = require("../../Schemas/userModel");
 let tryCatchMiddleware = require("../../Middlewares/tryCatchMiddleware");
 
 router.post("/sendmail", tryCatchMiddleware( async(req,res)=>{
-
+    console.log(req.body);
     //validating user
-    let validate = uModel.ValidationEmail({"userLogin.emailId" :req.body});
+    let validate = uModel.ValidationEmail(req.body);
     if( validate.error){ return res.send(validate.error.details[0].message) };
 
     //authenticating user
@@ -20,7 +20,8 @@ router.post("/sendmail", tryCatchMiddleware( async(req,res)=>{
 
     //setting resetPasswordToken And resetPasswordExpires
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000;
+    user.resetPasswordExpires = new Date().setHours(new Date().getHours()+1);
+    console.log(user.resetPasswordExpires);
     user = await user.save();
 
     //sending mail to resetpassword
@@ -39,12 +40,13 @@ router.post("/sendmail", tryCatchMiddleware( async(req,res)=>{
         from: "'amyflip APP:'<learnnew00@gmail.com>",
         to: user.userLogin.emailId,
         subject: "Reset your Password",
-        text: "open the below link to change your password \n http://localhost:4500/forgotpassword/"+token
+        text: "open the below link to change your password\n \n http://localhost:3000/reset%20password/"+token
     }
 
     transporter.sendMail(mailContent,(error,info)=>{
+        console.log(error);
         if(error){ return res.send(error)};
-        res.send({message:`message send: ${info.messageId}`,token:token,data:user});
+        res.send({message:`A mail is send to your EmailId.\n Reset Your Password Using the Link Provided in the mail.`,id:`${info.messageId}`,token:token});
     });
 
 }));
